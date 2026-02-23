@@ -4,21 +4,29 @@ sayHello :: String -> IO ()
 sayHello x = putStrLn ("Hello, " ++ x) 
 
 calcularPropina :: Float -> Float 
-calcularPropina x = x * (0.10) -- Soy pobre solo el 10 :P  
+calcularPropina x = x * (0.10) -- Soy pobre solo el 10 :P
 
--- Este estuvo interesante pero usando if then y con recursion salio asi:
+-- No usar recursion, entonces hay que usa if then else
 menor :: [Int] -> Int
+menor (x:[])   = x
 menor (x:y:[]) = if x > y then y else x
-menor (x:y:z:[]) = if x > y then menor [y,z] else menor [x,z] 
+menor (x:y:z:[]) = if x < y
+                     then if x < z
+                       then x else z
+                   else if y < z then y
+                       else z
 
 decide :: Bool -> String -> String -> String
 decide b t f = if b then t else f
 
 -- No sé si deba agregar tantos caso pero es que si no los agregaba ghci me marcaba errores :P
-esDescendiente []       = False
-esDescendiente (x:[])   = False
-esDescendiente (x:y:[]) = if x > y then True else False
-esDescendiente (x:y:zs) = if x > y then esDescendiente (y:zs) else False
+esDescendiente :: [Int] -> Bool
+esDescendiente (x:y:z:[]) = if x > y
+                              then if x > y
+                                then if y > z
+                                  then True else False
+                                else False
+                              else False
 
 -- Usando el amigo modulito y mirando el residuo de divir x / y
 esDivisible :: Int -> Int -> IO ()
