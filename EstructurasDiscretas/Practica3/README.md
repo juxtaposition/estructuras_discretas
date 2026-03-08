@@ -2,9 +2,12 @@
 En esta práctica 3 se  busca entender mejor los conceptos de recursio en haskell, ademas de tipos asi como tuplas y listas.
 
 ## Tiempo requerido en realizar la práctica completa
+El tiempo para esta practica no fue tanto en realidad, muchos ejercicio salieron de forma casi directa con las deficiones 
+de primo, coprimo, etc. La que me pudo tomar un poco más de tiempo fue la activadad del ejercicio 1, pues requrio investigar un poco más 
+sobre type, typeclasses y formas de evaluacion en haskell. 
 
 ## Comentarios
-
+Me gustaron los ejercicios, y las actividades en general una buena practica!
 
 ## Actividades
 
@@ -96,5 +99,24 @@ Es medido trickey la pregunta, porque la lista va a terminar con la memoría de 
 Así pues "infinito" y representar "todos" nunca va a pasar, pero esa lista de compresión esta bien definada y creará parejas
 de enteros hasta que se termine la memoria o haskell regrese cosas raras xD
 
+
+
 [^1]: https://learnyouahaskell.github.io/types-and-typeclasses.html#typeclasses-101
+
+### Recursion First Steps
+En la actividad piden observar un video del `El pollito pio` pero creo tener un ejemplo un poco más claro sobre recursión, mi madre
+nos cantaba esta canción (que asu vez mi abuela le cantaba también) es la de la [chivita](https://www.youtube.com/watch?v=vXOtwoI0T4E)
+La idea de esta canción para niños es que memoricen cada unos de los primeros pasos y vayan agregndo más que dependen del anterior
+
+Ejemplo:
+
+Caso base: La `chiva no quiere salir de allí`
+
+Paso Inductivo: Llamare a `X para que saque a la chiva de alli`
+
+Next Step: `X no quiere sacar a la chiva de allí`
+
+Paso Inductivo: Llamare a `Y para que saque a X para que saque a la chiva de allí`
+
+Next Step: `Y no quiere sacar X que no quiere sacar a la chiva de allí`
 
