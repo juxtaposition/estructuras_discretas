@@ -1,5 +1,5 @@
 import Natural (DTNat(..), sumaNat, multiNat)
-import Entero (Ent(..), sumaEnt)
+import Entero (Ent(..), suma_ent)
  
 
 -- Este metodo lo que hace tomar un entero y devolver su similar con un tipo de dato DTNat 
@@ -28,10 +28,10 @@ facNat (S n) = multiNat (S n) (facNat n)
 -- Metodo que multiplica dos Ent (enteros) y regresa un Ent
 multiEnt :: Ent -> Ent -> Ent
 multiEnt Zero Zero = Zero
-multiEnt (Suc Zero) Zero = Zero
-multiEnt Zero (Suc Zero) = Zero
-multiEnt (Suc Zero) (Suc m) = (Suc m)
-multiEnt (Suc n) (Suc Zero) = (Suc n)
-multiEnt (Suc n) (Suc m) =  sumaEnt (Suc n) (multiEnt (Suc n) m)
+multiEnt (Succ Zero) Zero = Zero
+multiEnt Zero (Succ Zero) = Zero
+multiEnt (Succ Zero) (Succ m) = (Succ m)
+multiEnt (Succ n) (Succ Zero) = (Succ n)
+multiEnt (Succ n) (Succ m) =  suma_ent (Succ n) (multiEnt (Succ n) m)
 
 
