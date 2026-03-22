@@ -18,3 +18,8 @@ potenciaNat (S n) Cero = (S Cero)
 potenciaNat Cero (S m) = Cero
 potenciaNat (S n) (S Cero) = (S n)
 potenciaNat (S n) (S m) =  multiNat (S n) (potenciaNat (S n) m) 
+
+-- Este metodo toma un DNat y regres su factorial
+facNat :: DTNat -> DTNat
+facNat Cero = (S Cero)
+facNat (S n) = multiNat (S n) (facNat n)
