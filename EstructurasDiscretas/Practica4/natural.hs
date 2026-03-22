@@ -5,10 +5,10 @@ data DTNat = Cero | S DTNat deriving(Eq, Show)
 -- Esta funcion suma dos DTNat y regresa un nuevo DTNat
 sumaNat :: DTNat -> DTNat -> DTNat
 sumaNat (Cero) (Cero) = Cero
-sumaNat (Cero) (S m) = S ( sumaNat Cero m)
-sumaNat (S n) (Cero) = S ( sumaNat n Cero)
 
 -- Recursion
+sumaNat (Cero) (S m) = S ( sumaNat Cero m)
+sumaNat (S n) (Cero) = S ( sumaNat n Cero)
 sumaNat (S n) (S m) = S (S (sumaNat n m))
 
 -- Esta funcion hace uso de la sumaNat para poder multiplicar dos DTNat
