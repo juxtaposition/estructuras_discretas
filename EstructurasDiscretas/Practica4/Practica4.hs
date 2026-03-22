@@ -1,4 +1,4 @@
-import Natural (DTNat(..))
+import Natural (DTNat(..), sumaNat, multiNat)
  
 
 -- Este metodo lo que hace tomar un entero y devolver su similar con un tipo de dato DTNat 
@@ -11,3 +11,10 @@ a_entero :: DTNat -> Int
 a_entero Cero = 0
 a_entero (S x) = 1 + (a_entero x)
 
+-- Este metodo toma dos DTNat y regresa la potencia de un DTNat elevado a un DTNat
+potenciaNat :: DTNat -> DTNat -> DTNat
+potenciaNat Cero Cero = (S Cero)
+potenciaNat (S n) Cero = (S Cero)
+potenciaNat Cero (S m) = Cero
+potenciaNat (S n) (S Cero) = (S n)
+potenciaNat (S n) (S m) =  multiNat (S n) (potenciaNat (S n) m) 
