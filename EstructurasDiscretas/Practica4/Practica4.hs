@@ -1,4 +1,5 @@
 import Natural (DTNat(..), sumaNat, multiNat)
+import Entero (Ent(..), sumaEnt)
  
 
 -- Este metodo lo que hace tomar un entero y devolver su similar con un tipo de dato DTNat 
@@ -23,3 +24,14 @@ potenciaNat (S n) (S m) =  multiNat (S n) (potenciaNat (S n) m)
 facNat :: DTNat -> DTNat
 facNat Cero = (S Cero)
 facNat (S n) = multiNat (S n) (facNat n)
+
+-- Metodo que multiplica dos Ent (enteros) y regresa un Ent
+multiEnt :: Ent -> Ent -> Ent
+multiEnt Zero Zero = Zero
+multiEnt (Suc Zero) Zero = Zero
+multiEnt Zero (Suc Zero) = Zero
+multiEnt (Suc Zero) (Suc m) = (Suc m)
+multiEnt (Suc n) (Suc Zero) = (Suc n)
+multiEnt (Suc n) (Suc m) =  sumaEnt (Suc n) (multiEnt (Suc n) m)
+
+
