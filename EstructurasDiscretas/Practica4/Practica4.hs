@@ -1,6 +1,6 @@
 import Natural (DTNat(..), sumaNat, multiNat)
 import Entero (Ent(..), suma_ent)
- 
+import Mati (Matrioska(..)) 
 
 -- Este metodo lo que hace tomar un entero y devolver su similar con un tipo de dato DTNat 
 a_natural :: Int -> DTNat 
@@ -18,11 +18,13 @@ potenciaNat Cero Cero = (S Cero)
 potenciaNat (S n) Cero = (S Cero)
 potenciaNat Cero (S m) = Cero
 potenciaNat (S n) (S Cero) = (S n)
+
 potenciaNat (S n) (S m) =  multiNat (S n) (potenciaNat (S n) m) 
 
 -- Este metodo toma un DNat y regres su factorial
 facNat :: DTNat -> DTNat
 facNat Cero = (S Cero)
+
 facNat (S n) = multiNat (S n) (facNat n)
 
 -- Metodo que multiplica dos Ent (enteros) y regresa un Ent
@@ -32,6 +34,17 @@ multiEnt (Succ Zero) Zero = Zero
 multiEnt Zero (Succ Zero) = Zero
 multiEnt (Succ Zero) (Succ m) = (Succ m)
 multiEnt (Succ n) (Succ Zero) = (Succ n)
+
 multiEnt (Succ n) (Succ m) =  suma_ent (Succ n) (multiEnt (Succ n) m)
 
+-- Funcion mayor or igual que compra dos matrioskas
+mayorIgual Mati Mati = True
+mayorIgual (Cont Mati) (Mati) = True
+mayorIgual Mati (Cont m) = False
 
+mayorIgual (Cont n) (Cont m) = mayorIgual n m
+
+
+-- Funcion aplana que convierte una lista planta de todas las matrioskas que la componen
+aplana Mati = [Mati]
+aplana (Cont n) = [(Cont n)] ++ aplana(n)
