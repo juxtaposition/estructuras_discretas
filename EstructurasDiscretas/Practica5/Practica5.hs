@@ -15,6 +15,13 @@ decimal_binario 1 = [1]
 decimal_binario n = (decimal_binario (n `div` 2)) ++ [mod n 2]
 
 -- Function que repite un numero n veces y lo regresa en una lista
+replica :: Int -> Int -> [Int]
 replica x 0 = []
 replica x 1 = [x]
 replica x n = [x] ++ (replica x (n-1))
+
+
+-- recupera un elemento en una lista basado en su indice
+recuperaElemento :: [Int] -> Int -> Int
+recuperaElemento (x:xs) 0 = x
+recuperaElemento (x:xs) i = recuperaElemento (xs) (i-1) 
