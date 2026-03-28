@@ -1,1 +1,4 @@
 .DS_Store
+
+# GHCI enviroments
+.ghc.*

@@ -7,3 +7,9 @@ import Data.Char
 hollerBack :: [Char] -> [Char]
 hollerBack [] = []
 hollerBack (x:xs) = (toUpper x):(hollerBack xs) 
+
+-- Toma un numero decimal y lo convierte a un array binario
+decimal_binario :: Int -> [Int]
+decimal_binario 0 = [0]
+decimal_binario 1 = [1]
+decimal_binario n = (decimal_binario (n `div` 2)) ++ [mod n 2]
