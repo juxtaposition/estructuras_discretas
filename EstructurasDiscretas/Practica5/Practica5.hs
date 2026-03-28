@@ -21,7 +21,14 @@ replica x 1 = [x]
 replica x n = [x] ++ (replica x (n-1))
 
 
--- recupera un elemento en una lista basado en su indice
+-- Recupera un elemento en una lista basado en su indice
 recuperaElemento :: [Int] -> Int -> Int
 recuperaElemento (x:xs) 0 = x
 recuperaElemento (x:xs) i = recuperaElemento (xs) (i-1) 
+
+
+-- Rota, toma el primer elemento de la lista y lo mueve al final esto lo repite n veces
+-- sobre la lista resultante en cada paso
+rota [] n = []
+rota l 0 = l
+rota (x:xs) n = rota (xs ++ [x]) (n-1)
