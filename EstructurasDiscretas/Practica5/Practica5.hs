@@ -32,3 +32,9 @@ recuperaElemento (x:xs) i = recuperaElemento (xs) (i-1)
 rota [] n = []
 rota l 0 = l
 rota (x:xs) n = rota (xs ++ [x]) (n-1)
+
+-- funcion extranio
+extranio n = [n] ++ (exAux n)
+
+exAux 1 = []
+exAux n = if mod n 2 == 0 then [n `div` 2] ++ exAux (n `div` 2) else [(n * 3) + 1] ++ exAux ((n * 3) + 1)
