@@ -3,7 +3,7 @@ module Practica5 where
 import Data.Char
 
 
--- Fucion que toma un String or [Char] y lo convierte a uppercase
+-- Funcion que toma un String or [Char] y lo convierte a uppercase
 hollerBack :: [Char] -> [Char]
 hollerBack [] = []
 hollerBack (x:xs) = (toUpper x):(hollerBack xs) 
@@ -29,12 +29,16 @@ recuperaElemento (x:xs) i = recuperaElemento (xs) (i-1)
 
 -- Rota, toma el primer elemento de la lista y lo mueve al final esto lo repite n veces
 -- sobre la lista resultante en cada paso
+rota :: [Int] -> Int -> [Int]
 rota [] n = []
 rota l 0 = l
 rota (x:xs) n = rota (xs ++ [x]) (n-1)
 
 -- funcion extranio
+extranio :: Int -> [Int]
 extranio n = [n] ++ (exAux n)
 
+-- Implementacion del algoritmo extranio
+exAux :: Int -> [Int]
 exAux 1 = []
 exAux n = if mod n 2 == 0 then [n `div` 2] ++ exAux (n `div` 2) else [(n * 3) + 1] ++ exAux ((n * 3) + 1)
