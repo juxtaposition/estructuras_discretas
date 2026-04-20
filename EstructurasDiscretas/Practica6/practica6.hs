@@ -16,3 +16,15 @@ refleja (AB n Vacio Vacio) = AB n Vacio Vacio
 refleja (AB n t1 Vacio) = AB n Vacio (refleja t1)
 refleja (AB n Vacio t2) = AB n (refleja t2) Vacio
 refleja (AB n t1 t2) = AB n (refleja t2) (refleja t1)
+
+minimo :: Ord a => Arbol a -> a
+minimo Vacio = error "Arbol Vacio"
+minimo (AB n t1 t2) = minListAux (minToList (AB n t1 t2)) n
+
+minToList (AB n Vacio Vacio) = [n]
+minToList (AB n Vacio t2) = [n] ++ (minToList t2)
+minToList (AB n t1 Vacio) = [n] ++ (minToList t1)
+minToList (AB n t1 t2) = [n] ++ ((minToList t1) ++ (minToList t2))
+
+minListAux []  x = x
+minListAux (x:xs) y = if x < y then (minListAux (xs) x) else (minListAux xs y)
