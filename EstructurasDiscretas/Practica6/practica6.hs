@@ -1,4 +1,4 @@
-module Practica5 where
+module Practica6 where
 
 data Arbol a = Vacio | AB a (Arbol a) (Arbol a) deriving (Eq, Ord, Show)
 
