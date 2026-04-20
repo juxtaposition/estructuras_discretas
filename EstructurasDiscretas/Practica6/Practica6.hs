@@ -1,5 +1,6 @@
 module Practica6 where
 
+-- Los test me fallabva si sacaba el tipo de dato Arbol a un file como Aux.hs
 data Arbol a = Vacio | AB a (Arbol a) (Arbol a) deriving (Eq, Ord, Show)
 
 nVacios :: Arbol a -> Int
@@ -30,3 +31,10 @@ arbolALista (AB n t1 t2) = [n] ++ ((arbolALista t1) ++ (arbolALista t2))
 minListAux :: Ord t => [t] -> t -> t
 minListAux []  x = x
 minListAux (x:xs) y = if x < y then (minListAux (xs) x) else (minListAux xs y)
+
+
+recorrido :: Arbol a -> String -> [a]
+recorrido Vacio _ = []
+recorrido (AB x izq der) "InOrder" = recorrido izq "InOrder" ++ [x] ++ recorrido der "InOrder"
+recorrido (AB x izq der) "PreOrder" = [x] ++ recorrido izq "PreOrder" ++ recorrido der "PreOrder"
+recorrido (AB x izq der) "PostOrder" =  recorrido izq "PostOrder" ++ recorrido der "PostOrder" ++ [x]
