@@ -1,6 +1,6 @@
 module Practica6 where
 
-data Arbol a = Vacio | AB a (Arbol a) (Arbol a) deriving (Eq, Ord, Show)
+import Aux (arbolALista, minListAux, Arbol(..))
 
 nVacios :: Arbol a -> Int
 nVacios Vacio = 0
@@ -19,12 +19,4 @@ refleja (AB n t1 t2) = AB n (refleja t2) (refleja t1)
 
 minimo :: Ord a => Arbol a -> a
 minimo Vacio = error "Arbol Vacio"
-minimo (AB n t1 t2) = minListAux (minToList (AB n t1 t2)) n
-
-minToList (AB n Vacio Vacio) = [n]
-minToList (AB n Vacio t2) = [n] ++ (minToList t2)
-minToList (AB n t1 Vacio) = [n] ++ (minToList t1)
-minToList (AB n t1 t2) = [n] ++ ((minToList t1) ++ (minToList t2))
-
-minListAux []  x = x
-minListAux (x:xs) y = if x < y then (minListAux (xs) x) else (minListAux xs y)
+minimo (AB n t1 t2) = minListAux (arbolALista (AB n t1 t2)) n
