@@ -52,3 +52,8 @@ alturaAb (AB r t1 t2) =  1 + max (alturaAb t1) (alturaAb t2)
 esBalanceado :: Arbol a -> Bool
 esBalanceado Vacio = True
 esBalanceado (AB _ t1 t2) = if (alturaAb t1) == (alturaAb t2) then True else False
+
+listaArbol :: [Int] -> Arbol Int
+listaArbol [] = Vacio
+listaArbol (x:[]) = (AB x Vacio Vacio)
+listaArbol (x:y:xs) = AB x (AB y Vacio Vacio) (listaArbol xs)
