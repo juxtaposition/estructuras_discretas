@@ -1,4 +1,4 @@
-module Practica6 (TipoDeOrden(..)) where
+module Practica6 where
 
 -- Los test me fallabva si sacaba el tipo de dato Arbol a un file como Aux.hs
 data Arbol a = Vacio | AB a (Arbol a) (Arbol a) deriving (Eq, Ord, Show)
@@ -41,3 +41,14 @@ recorrido Vacio _ = []
 recorrido (AB x t1 t2) InOrder = recorrido t1 InOrder ++ [x] ++ recorrido t2 InOrder
 recorrido (AB x t1 t2) PreOrder = [x] ++ recorrido t1 PreOrder ++ recorrido t2 PreOrder
 recorrido (AB x t1 t2) PostOrder = recorrido t1 PostOrder ++ recorrido t2 PostOrder ++ [x]
+
+-- Funcion tomada de las notas del laboratorio.
+-- https://github.com/1rv1nn/lab-discretas/blob/main/arbolesHaskell_6/nota.hs#L87
+alturaAb :: Arbol a -> Int
+alturaAb  Vacio = 0
+alturaAb (AB r Vacio Vacio) = 1
+alturaAb (AB r t1 t2) =  1 + max (alturaAb t1) (alturaAb t2)
+
+esBalanceado :: Arbol a -> Bool
+esBalanceado Vacio = True
+esBalanceado (AB _ t1 t2) = if (alturaAb t1) == (alturaAb t2) then True else False
