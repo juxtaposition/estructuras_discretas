@@ -1,4 +1,4 @@
-module Practica6 where
+module Practica6 (TipoDeOrden(..)) where
 
 -- Los test me fallabva si sacaba el tipo de dato Arbol a un file como Aux.hs
 data Arbol a = Vacio | AB a (Arbol a) (Arbol a) deriving (Eq, Ord, Show)
