@@ -55,3 +55,27 @@ c) AB 8 (AB 6 (AB 1 Vacio (AB 4 (AB 2 Vacio Vacio) Vacio)) (AB 7 Vacio
 Vacio)) (AB 15 Vacio Vacio)
 
 ![Arbol 3](assets/AB3P6.png)
+B
+oooo
+B
+
+practica6_test.hs:45:80: error:
+    Data constructor not in scope: InOrden :: TipoDeOrden
+    Suggested fix: Perhaps use ‘InOrder’ (imported from Practica6)
+   |
+45 |     [ "InOrden traversal"  ~: [1, 3, 4, 5, 6, 7] ~=? recorrido arbolBalanceado InOrden
+   |                                                                                ^^^^^^^
+
+practica6_test.hs:46:80: error:
+    Data constructor not in scope: PreOrden :: TipoDeOrden
+    Suggested fix: Perhaps use ‘PreOrder’ (imported from Practica6)
+   |
+46 |     , "PreOrden traversal" ~: [5, 3, 1, 4, 7, 6] ~=? recorrido arbolBalanceado PreOrden
+   |                                                                                ^^^^^^^^
+
+practica6_test.hs:47:80: error:
+    Data constructor not in scope: PosOrden :: TipoDeOrden
+    Suggested fix: Perhaps use ‘PostOrder’ (imported from Practica6)
+   |
+47 |     , "PosOrden traversal" ~: [1, 4, 3, 6, 7, 5] ~=? recorrido arbolBalanceado PosOrden
+
