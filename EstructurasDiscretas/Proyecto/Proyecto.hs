@@ -2,6 +2,8 @@ import Data.Map (Map, fromList, insertWith, empty, toList)
 import Data.List (sortOn)
 import Data.Ord (Down(..))
 import Data.Text (replace, pack, unpack)
+import Data.Bits
+import Aux (stringTo8BitsBinary) 
 
 -- Is more easy just create the type instead write all the time the Type for each fn using Maps
 type FreqMap = Map Char Int
@@ -76,12 +78,13 @@ decode huffmanTree (x:xs) acc = decode huffmanTree (snd (decodeAux huffmanTree (
 decodeAux (BT (Just k, v) Void Void) (xs) = ([k], xs)
 decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else decodeAux t2 xs
 
+
 -- TODO: Crate a more verbose main
 main :: IO ()
 main = do
     putStrLn "Inserta la cadena a encodear:"
     originalText <- getLine
-    putStrLn ("Cadena a encodear: " ++ originalText)
+    -- putStrLn ("Cadena a encodear: " ++ originalText)
     let originalFreqMap = freqList (createDicc originalText)
     putStrLn "Tabla de frecuencia con sus valores: "
     print originalFreqMap
@@ -96,9 +99,21 @@ main = do
     putStrLn ""
     putStrLn "Y su represnetacion en binario queda como:"
     let binaryCode = convertToBinary (charDiccValues) originalText
-    print binaryCode
+    putStrLn binaryCode
     putStrLn ""
-    putStrLn "ahora usando el arbol de arriba y su representacion en binario obtendremos la cadena orinal:"
-    print (decode huffmanTree binaryCode "")
+    putStrLn "Ahora usando el arbol de arriba y su representacion en binario obtendremos la cadena orinal:"
+    putStrLn (decode huffmanTree binaryCode "")
+    putStrLn "################# ACTIVIDAD #################"
+    putStrLn "Vamos a comparar el size de la cadena original en bits y de la generada con huffman:"
+    putStrLn "Size de la cadena original en bits:"
+    let originalTextLen = length (stringTo8BitsBinary originalText)
+    print originalTextLen
+    putStrLn ""
+    putStrLn "Ahora el size en bits de la cadena generada con huffman:"
+    let newTextLen = length binaryCode
+    print newTextLen
+    putStrLn ""
+    putStrLn "El ahorro fue de: "
+    putStrLn ((show (originalTextLen - newTextLen)) ++ " bits")
 
 
