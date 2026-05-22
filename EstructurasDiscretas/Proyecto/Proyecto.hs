@@ -61,20 +61,24 @@ buildHuffman ((BT (Nothing, x) t1 t2):(BT (Nothing, y) t3 t4):rest) =
 
 
 -- Convert a Huffman tree into a map with the Character and his representation in binary
+charDicc :: BT (Maybe a, b) -> [(a, [Char])]
 charDicc Void = []
 charDicc (BT (Just c, _) Void Void) = [(c, "")]
 charDicc (BT _ l r) = [(c, '0':rest) | (c, rest) <- charDicc l] ++ [(c, '1':rest) | (c, rest) <- charDicc r]
 
 -- Convert from a list of chars and values to the binary representation
 -- We used the replace from Data.Text pack and unpack is for conver String to Text and viceversa
+convertToBinary :: [(Char, String)] -> String -> String
 convertToBinary [] xs = xs
 convertToBinary ((k, v):rest) xs = convertToBinary rest (unpack (replace (pack [k]) (pack v) (pack xs)))
 
 -- We are using an auxiliar fn for find the character for each bit code
+decode :: BT (Maybe a, b) -> [Char] -> [a] -> [a]
 decode huffmanTree [] acc = acc
 decode huffmanTree (x:xs) acc = decode huffmanTree (snd (decodeAux huffmanTree (x:xs))) (acc ++ (fst (decodeAux huffmanTree (x:xs))))
 
 -- Get the character encoded by the binary data we are moving from 0 (left) or 1 (right)
+decodeAux :: BT (Maybe a, b) -> [Char] -> ([a], [Char])
 decodeAux (BT (Just k, v) Void Void) (xs) = ([k], xs)
 decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else decodeAux t2 xs
 
