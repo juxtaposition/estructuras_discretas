@@ -58,11 +58,6 @@ buildHuffman ((BT (Nothing, x) t1 t2):(BT (Nothing, y) t3 t4):rest) =
             (BT (Nothing, x + y) (BT (Nothing, x) t1 t2) (BT (Nothing, y) t3 t4) : rest))
 
 
-paso ((BT (Just n, x) t1 t2):(BT (Just m, y) t3 t4):rest) =
-        (sortOn freq
-            (BT (Nothing, x + y) (BT (Just n, x) t1 t2) (BT (Just m, y) t3 t4) : rest))
-
-
 -- Convert a Huffman tree into a map with the Character and his representation in binary
 charDicc Void = []
 charDicc (BT (Just c, _) Void Void) = [(c, "")]
@@ -73,10 +68,34 @@ charDicc (BT _ l r) = [(c, '0':rest) | (c, rest) <- charDicc l] ++ [(c, '1':rest
 convertToBinary [] xs = xs
 convertToBinary ((k, v):rest) xs = convertToBinary rest (unpack (replace (pack [k]) (pack v) (pack xs)))
 
+decode huffmanTree [] acc = acc
+decode huffmanTree (x:xs) acc = decode huffmanTree (snd (decodeAux huffmanTree (x:xs))) (acc ++ (fst (decodeAux huffmanTree (x:xs))))
+
+decodeAux (BT (Just k, v) Void Void) (xs) = ([k], xs)
+decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else decodeAux t2 xs
+
 main :: IO ()
 main = do
     putStrLn "Inserta la cadena a encodear:"
-    text <- getLine
-    let binaryCode = convertToBinary ( charDicc (buildHuffman (convertToNodos (freqList (createDicc text))))) text
+    originalText <- getLine
+    putStrLn ("Cadena a encodear: " ++ originalText)
+    let originalFreqMap = freqList (createDicc originalText)
+    putStrLn "Tabla de frecuencia con sus valores: "
+    print originalFreqMap
+    putStrLn ""
+    putStrLn "Ahora utilizando el mapeo (table) de frecuencias contruiremos el arbol de huffman: "
+    let huffmanTree = buildHuffman (convertToNodos (originalFreqMap))
+    print huffmanTree
+    putStrLn ""
+    let charDiccValues = charDicc (huffmanTree)
+    putStrLn "Por cada caracter le corresponde un codigo de huffman (bit al recorrer el arbol izq o der): "
+    print charDiccValues
+    putStrLn ""
+    putStrLn "Y su represnetacion en binario queda como:"
+    let binaryCode = convertToBinary (charDiccValues) originalText
     print binaryCode
+    putStrLn ""
+    putStrLn "ahora usando el arbol de arriba y su representacion en binario obtendremos la cadena orinal:"
+    print (decode huffmanTree binaryCode "")
+
 
