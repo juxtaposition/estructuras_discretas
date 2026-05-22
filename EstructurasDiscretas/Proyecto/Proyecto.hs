@@ -63,19 +63,20 @@ paso ((BT (Just n, x) t1 t2):(BT (Just m, y) t3 t4):rest) =
             (BT (Nothing, x + y) (BT (Just n, x) t1 t2) (BT (Just m, y) t3 t4) : rest))
 
 
-mapCode (BT (Just c, _) Void Void) = [(c, "")]
-mapCode (BT _ l r) =
-    [(c, '0':code) | (c, code) <- mapCode l] ++
-    [(c, '1':code) | (c, code) <- mapCode r]
-mapCode Void = []
+-- Convert a Huffman tree into a map with the Character and his representation in binary
+charDicc Void = []
+charDicc (BT (Just c, _) Void Void) = [(c, "")]
+charDicc (BT _ l r) = [(c, '0':rest) | (c, rest) <- charDicc l] ++ [(c, '1':rest) | (c, rest) <- charDicc r]
 
-binaryBody [] xs = xs
-binaryBody ((k, v):rest) xs = binaryBody rest (unpack (replace (pack [k]) (pack v) (pack xs)))
+-- Convert from a list of chars and values to the binary representation
+-- We used the replace from Data.Text pack and unpack is for conver String to Text and viceversa
+convertToBinary [] xs = xs
+convertToBinary ((k, v):rest) xs = convertToBinary rest (unpack (replace (pack [k]) (pack v) (pack xs)))
 
 main :: IO ()
 main = do
     putStrLn "Inserta la cadena a encodear:"
     text <- getLine
-    print (buildHuffman (convertToNodos (freqList (createDicc text))))
-
+    let binaryCode = convertToBinary ( charDicc (buildHuffman (convertToNodos (freqList (createDicc text))))) text
+    print binaryCode
 
