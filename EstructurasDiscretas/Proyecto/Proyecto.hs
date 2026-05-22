@@ -68,12 +68,15 @@ charDicc (BT _ l r) = [(c, '0':rest) | (c, rest) <- charDicc l] ++ [(c, '1':rest
 convertToBinary [] xs = xs
 convertToBinary ((k, v):rest) xs = convertToBinary rest (unpack (replace (pack [k]) (pack v) (pack xs)))
 
+-- We are using an auxiliar fn for find the character for each bit code
 decode huffmanTree [] acc = acc
 decode huffmanTree (x:xs) acc = decode huffmanTree (snd (decodeAux huffmanTree (x:xs))) (acc ++ (fst (decodeAux huffmanTree (x:xs))))
 
+-- Get the character encoded by the binary data we are moving from 0 (left) or 1 (right)
 decodeAux (BT (Just k, v) Void Void) (xs) = ([k], xs)
 decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else decodeAux t2 xs
 
+-- TODO: Crate a more verbose main
 main :: IO ()
 main = do
     putStrLn "Inserta la cadena a encodear:"
