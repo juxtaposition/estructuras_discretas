@@ -1,13 +1,13 @@
 \documentclass[12pt]{report}
 
 \usepackage[spanish]{babel}
-\usepackage{graphicx} % Quiza lo necesite
-\usepackage{tikz} % Quiza lo necesite
 \usepackage{amsmath} % Quiza lo necesite
 \usepackage{multicol} % Quiza lo necesite
 \usepackage{hyperref} % Quiza lo necesite
 \usepackage{animate} % Quiza lo necesite
 \usepackage{pgfplots}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true}
 \pgfplotsset{compat=1.18}
 \setlength{\parskip}{1em} % Sets paragraph spacing to 1em (relative to current font size)
 % or
@@ -17,24 +17,159 @@
 
 \title{Proyecto Final \\ \large Codificación de Huffman}
 \author{Facultad de Ciencias \\ \textit{Durán Pérez Gerardo Ezequiel} }
-\date{30 de Abril de 2026}
+\date{24 de Mayo de 2026}
 
 \begin{document}
 
 \maketitle
-\tableofcontents
 
 % ----------------------------------------
-\chapter{Introducción}
-Aca empieza el proyecto final
+\chapter*{Introduccion}
+El objetivo principal de este trabajo es implementar el algoritmo de huffman para cadenas de texto (en 8bits) para poder coficar y decodificar usando el arbol de huffman generado.
+Otro objetivo es entender como funcionan los algoritmos de compresion, y su importancia en optimizar la cantidad de bits enviados en una comunicacion o en el peso de algun objeto.
 
-\subsection{Test}
-test
-\newpage
-\subsection{SubSection}
-test
-\newpage
+El proyecto usa el lenguaje de programacion haskell, y para comprobar el funcionamiento del programa se uso la herramienta de compilacion e interprete de haskell. \footnote{Glasgow Haskell Compiler}GHCi
 
-\section{Section UnderContruction}
+Este algoritmos abre las puertas a cantidad mayor de algoritmos de compresion de texto, images, videos, etc. los cuales tambien se categorizan por \footnote{Sin perdida de informacion}lossless and \footnote{Con perdida imperceptible para el ojo humano}lossy
+
+\chapter*{Desarrollo}
+Para poder comenzar a implementar el algoritmo de huffman lo primero que tenemos que hacer es encontrar la tabla de frecuencias, mi princpial enfoque fue utilizar hash maps. 
+En haskell es agregando el moduelo \textbf{Data.map}
+
+Si bien al comienzo parecia una buena idea y ahorro un poco las operaciones de insert, update y ordernar. Tambien agrego una paso mas de convertir de un \textbf{Map Char Int} a un \textbf{[(Char, Int]}
+
+El codigo final quedo de la siguiente forma
+\begin{verbatim}
+type FreqMap = Map Char Int
+
+-- upsert the Map with the new key value
+upsertDicc :: Char -> FreqMap -> FreqMap
+upsertDicc key mp = insertWith (+) key 1 mp
+
+-- Build the dicc with the key value of each character
+createDicc :: [Char] -> FreqMap
+createDicc []     = empty
+createDicc (x:xs) = upsertDicc x (createDicc xs)
+
+-- Convert from Map (FreqMap) to List
+freqList :: FreqMap -> [(Char, Int)]
+freqList fm = sortOn snd (toList fm)
+\end{verbatim}
+
+donde \textbf{createDicc} se encarga de tomar una cadena de caracters, recorrerla ir creando un map con el caracter y su cantidad de apraciones, para esto la funcion \textbf{insertWith} fue la que se encargo de hacer el upsert, si no existe lo agrega, pero si existe lo actualiza con la funcion que indicas en mi caso es una suma
+
+la funcion \textbf{freqList} lo que hace es crear una lista porque es mas complicado trabajar sobre Data.Map
+
+Estos arroja un resultado como el siguiente para la siguiente cadena [AVRAHKADABRA]:
+\begin{verbatim}
+[('B',1),('D',1),('H',1),('K',1),('V',1),('[',1),(']',1),('R',2),('A',5)]    
+\end{verbatim}
+
+Ahora que ya tenemos las frecuencias lo suguiente es construir un arbol con esas frecuencias
+
+Definimos nuestro arbol de la siguiente forma, donde a es una tupla del estilo (Char, Int) que es el caracter y su frecuencia:
+
+\begin{verbatim}
+data BT a = Void | BT a (BT a ) (BT a) deriving (Eq, Ord, Show)
+\end{verbatim}
+
+Algo que debo mencionar al momento de estar contruyendo el arbol de huffman es que cuando en las llamadas recursivas queria escribir algo que no fuera una tupa en mi arbol, es decir los nodos internos no los tomamos en cuenta al menos para poder generar el codigo de huffman, entonces queria poder insertar algo simarl a un \textbf{Null} pero en haskell no existe ese tipo de datos, entonces encontre que lo mas similar es usar \textbf{Maybe (Just a, Nothing)} 
+
+De tal forma que ahora nuestras tuplas no eran solo tuplas si no que tenian el tipo Maybe, 
+\textbf{BT Just (Char, Int) Void Void} para las hojas y para los nodos internos \textbf{BT Nothing t1 t2}
+
+La idea principal para poder construir el arbol de huffman, era crear una lista de Nodos con los valores de las tuplas (sus frecuencias) para eso cree la funcion que toa una lista de tuplas y crea sus correspondientes nodos, ahora entonces tenemos una lista de nodos y podemos ir creando el arbol con esos nodos
+
+\begin{verbatim}
+convertToNodos :: [(a, b)] -> [BT (a, b)]
+convertToNodos xs = [BT (Just c, n) Void Void | (c,n) <- xs]
+\end{verbatim}
+
+La funcion que cree el arbol de huffman va tomando los nodos ordenado siempre en cada paso recursivo, entonces los primeros dos elementos de la lista son los menores.
+y termina cuando encuentra una lista con un solo elemento que es arbol ya construido
+
+\begin{verbatim}
+buildHuffman :: (Num b, Ord b) => [BT (Maybe a, b)] -> BT (Maybe a, b)
+buildHuffman [t] = t
+buildHuffman ((BT (Just n, x) t1 t2):(BT (Just m, y) t3 t4):rest) =
+    buildHuffman
+        (sortOn freq
+            (BT (Nothing, x + y) (BT (Just n, x) t1 t2) (BT (Just m, y) t3 t4) : rest))
+\end{verbatim}
+
+para no poner todos los casos, omiti algunos pero se puede ver la funcion completeta en el \href{https://github.com/juxtaposition/estructuras_discretas/blob/main/EstructurasDiscretas/Proyecto/Proyecto.hs#L38}{repositorio de github} 
+
+Aca un ejemplo de su salida:
+\begin{verbatim}
+    BT (Nothing,14) (BT (Just 'A',5) Void Void) (BT (Nothing,9) (BT (Nothing,4) (BT (Nothing,2) (BT (Just 'H',1) Void Void) (BT (Just 'K',1) Void Void)) (BT (Nothing,2) (BT (Just 'B',1) Void Void) (BT (Just 'D',1) Void Void))) (BT (Nothing,5) (BT (Just 'R',2) Void Void) (BT (Nothing,3) (BT (Just ']',1) Void Void) (BT (Nothing,2) (BT (Just 'V',1) Void Void) (BT (Just '[',1) Void Void)))))
+\end{verbatim}
+
+Ahora que tenemos el arbol solo necesitamos crea el correspondiente codigo de nuestro mensaje original siguiendo el arbol, con la regla de que para cada paso a la izquieda se agrega un 0 y para la derecha un 1. que son los bits nuevos
+
+\begin{verbatim}
+charDicc :: BT (Maybe a, b) -> [(a, [Char])]
+charDicc Void = []
+charDicc (BT (Just c, _) Void Void) = [(c, "")]
+charDicc (BT _ l r) = [(c, '0':rest) | (c, rest) <- charDicc l] ++ [(c, '1':rest) | (c, rest) <- charDicc r]
+\end{verbatim}
+
+Esto nos genera la nueva cadena codifica de bits de nuestro mensaje, que resulta ser mucho mas reducida que la original.
+
+Ahora que tenemos el mensaje original y el nuevo encodeado, solo resta poder regresar del mensaje encodeado usando el arbol y recorriendo cada bit como si fuera un paso en el arbol.
+Los caracteres estan encodeado por pasos de izq (0) a der (1) del arbol, entonces vamos leyendo bit por bit del mensaje encoeado y cuando encontremos una hoja regresamos el valor del caracter que contiene.
+
+Para ello cree dos funciones una que recorre la cadena de bits y la otra que regresa el caracter con la nueva cadena de bits ya recorrida es decir cuando encuentra un caracter debemos regresar la cadena de bits que sigue. la funcion de decode hace uso de un acumular que es una cadena vacia al comienzo luego se va llenando los caracteres del arbol. No se me ocurrio otra forma sin usar el acumulador.
+
+\begin{verbatim}
+-- We are using an auxiliar fn for find the character for each bit code
+decode :: BT (Maybe a, b) -> [Char] -> [a] -> [a]
+decode huffmanTree [] acc = acc
+decode huffmanTree (x:xs) acc = decode huffmanTree (snd (decodeAux huffmanTree (x:xs))) (acc ++ (fst (decodeAux huffmanTree (x:xs))))
+
+-- Get the character encoded by the binary data we are moving from 0 (left) or 1 (right)
+decodeAux :: BT (Maybe a, b) -> [Char] -> ([a], [Char])
+decodeAux (BT (Just k, v) Void Void) (xs) = ([k], xs)
+decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else decodeAux t2 xs
+
+\end{verbatim}
+
+Asi pues cuando obtenemos de nuevo el mensaje original entonces nuestro arbol de huffman esta bien construido con nuestra nueva cadena bits encodeada.
+
+
+\chapter*{Conclusiones}
+Si bien no tengo mucha experiencia en haskell, la mayoria de las funciones eran bastante intuitivas usando recursio, pero hubo algunas que se me complicaron un poco, como el caso de construir el arbol de huffman recursivamente con mi funcion, al final hice uso de Maybe.
+
+Creo que una vez que entiendes como funcione el algoritmo resulta bastante intuitivo, es decir la idea es asignar nuevos "codigos" a cada caracter y no su representacion en ASCII o UTF-8, etc. entonces el mensaje original resulta mucho mas reducido. 
+
+Una de las funciones que tambien tuve que mirar con cuidado fue cuando conviertes una cadena a su represetacion en biario porque muchas veces obtienes cadenas de bits de longitudes diferentes, lo cual complica su codificaion dado que no sigue un estanda, entonces utilice una funcion para que los caracteres que tuvieran menos de 8 bits entonces les agrega un cero al comienzo para que tengan siepre 8bits.
+
+Me gusto mucho trabajar con este proyecto y algoritmo, nunca lo habia implementado en haskell.
+
+\begin{thebibliography}{99}
+
+\bibitem{}
+Automation, I. a. N., \& Del artículo, F. (n.d.). \textit{CODIFICACIÓN DE LA INFORMACIÓN (I)}. Venancioguntinas.com. Retrieved May 25, 2026, from \url{https://www.venancioguntinas.com/_files/ugd/63ce8d_9dfc906cd2c24da681a9b002d06e5b95.pdf?index=true}
+
+\bibitem{}
+BibGuru. (n.d.). Bibguru.com. Retrieved May 25, 2026, from \url{https://app.bibguru.com/p/9a50fd4a-3206-4034-afbe-dbd94d3c5798}
+
+\bibitem{}
+La Compresión de Datos Consiste en la Reducción del Volumen... (n.d.). \textit{Compresión de datos}. Edu.Ar. Retrieved May 25, 2026, from \url{https://cs.uns.edu.ar/~mlg/ed/downloads/Teorias/uns-ed-2019-clase-19-Procesamiento%20de%20textox2.pdf}
+
+\bibitem{}
+Ferrier, A. (n.d.). \textit{A quick tutorial on generating a Huffman tree}. Retrieved from \url{https://www.andrewferrier.com/my-work/huffman_tutorial/}
+
+\bibitem{}
+MIT OpenCourseWare. (n.d.). Retrieved from \url{https://ocw.mit.edu/?utm_source=chatgpt.com}
+
+\bibitem{}
+Stanford University. (n.d.). \textit{Overview}. Retrieved from \url{https://cs.stanford.edu/people/eroberts/courses/soco/projects/data-compression/overview/index.htm}
+
+\bibitem{}
+University of Canterbury Computer Science Education Research Group. (n.d.). \textit{Huffman tree - computer science field guide}. Retrieved from \url{https://www.csfieldguide.org.nz/en/interactives/huffman-tree/}
+
+\bibitem{}
+TextFixer. (n.d.). Retrieved from \url{https://www.textfixer.com/tools/remove-line-breaks.php}
+
+\end{thebibliography}
 \end{document}
-
