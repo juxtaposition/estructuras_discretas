@@ -134,7 +134,224 @@ decodeAux (BT (Nothing, v) t1 t2) (x:xs) = if x == '0' then decodeAux t1 xs else
 \end{verbatim}
 
 Asi pues cuando obtenemos de nuevo el mensaje original entonces nuestro arbol de huffman esta bien construido con nuestra nueva cadena bits encodeada.
+\section*{Actividades}
 
+\subsection*{1. Cuál es la diferencia entre la compresión con perdida y compresión sin perdida?}
+
+A groso modo la compresión con perdida se utiliza cuando no importa tener un poco de perdida si no es perceptible
+
+para los humanos, como imagenes o sonido.
+
+La compresión sin perdida al contrario esta busca mantener los datos originales, y es usada para base de datos, codigos de programas.
+
+\subsection*{2. Investiga como se lleva a cabo la compresión de texto, images, videos y audio.}
+
+En la compresión de información se pueden clasificar a los algoritmos en dos categorias:
+Lossless (sin perdida)
+
+Estos son algoritmos que buscan mantener la información original sin ninguna perdida y algunos de estos algoritmos pueden ser:
+
+\subsubsection*{Compresión general de archivos Lossless (sin perdida)}
+\begin{itemize}
+    \item Huffman Coding
+    \item Arithmetic Coding
+    \item LZ77
+    \item LZ78
+    \item PPM (Prediction by Partial Matching)
+\end{itemize}
+
+\subsubsection*{Imagenes}
+\begin{itemize}
+    \item PNG
+    \item GIF
+    \item JPEG-LS
+\end{itemize}
+
+
+\subsubsection*{Audio}
+\begin{itemize}
+    \item FLAC
+    \item ALAC
+\end{itemize}
+
+\subsubsection*{Vidfeo}
+\begin{itemize}
+    \item FFV1
+\end{itemize}
+
+\subsubsection*{Compresión general de archivos Lossy (con perdida)}
+\subsubsection*{Imagenes}
+\begin{itemize}
+    \item JPEG
+    \item WebP Lossy
+    \item JPEG
+    \item HEIF / HEIC
+    \item AVIF
+\end{itemize}
+
+
+\subsubsection*{Audio}
+\begin{itemize}
+    \item MP3
+    \item AAC
+    \item Ogg Vorbis
+    \item WMA
+\end{itemize}
+
+\subsubsection*{Vidfeo}
+\begin{itemize}
+    \item H.264 / AVC
+    \item H.265 / HEVC
+    \item AV1
+    \item MPEG-2
+    \item MPEG-4 Part 2
+\end{itemize}
+
+
+
+\subsection*{3. ¿A que se refiere el enfoque para la compresión de datos, códigos de longitud variable?}
+
+Esencialmente se refiere a la asignación de codigos binarios a cada caracter (elemento), los elementos que se repiten mas reciven codigos mas cortos y los menos frecuentes mas largos. Tal cual como esta hecho el árbo de huffman vas creando el arbol de los menos frecuentes a los más frecuentes.
+
+
+\subsection*{4. Crea 2 archivos de texto donde:}
+a) Ingresa una frase que te guste de tu canción favorita SIN ESPACIOS y revisa su contenido binario mediante el comando xxd y su peso en bytes.
+
+\begin{verbatim}
+> xxd a.txt 
+00000000: 4e6f 626f 6479 676f 6e6e 6174 616b 656d  Nobodygonnatakem
+00000010: 7963 6172 2c49 276d 676f 6e6e 6172 6163  ycar,I'mgonnarac
+00000020: 6569 7474 6f74 6865 6772 6f75 6e64 416e  eittothegroundAn
+00000030: 646e 6f62 6f64 7967 6f6e 6e61 6265 6174  dnobodygonnabeat
+00000040: 6d79 6361 722c 6974 2773 676f 6e6e 6162  mycar,it'sgonnab
+00000050: 7265 616b 7468 6573 7065 6564 6f66 736f  reakthespeedofso
+00000060: 756e 644f 6f68 2c69 7427 7361 6b69 6c6c  undOoh,it'sakill
+00000070: 696e 676d 6163 6869 6e65 4974 2773 676f  ingmachineIt'sgo
+00000080: 7465 7665 7279 7468 696e 674c 696b 6561  teverythingLikea
+00000090: 6472 6976 696e 6770 6f77 6572 2c62 6967  drivingpower,big
+000000a0: 6661 7474 6972 6573 616e 6465 7665 7279  fattiresandevery
+000000b0: 7468 696e 670a                           thing.
+\end{verbatim}
+
+Peso:
+\begin{verbatim}
+> stat -f%z a.txt 
+182
+\end{verbatim}
+
+b) Ingresa la misma frase ahora CON ESPACIOS y revisa su contenido binario mediante el comando xxd y su peso en bytes.
+
+\begin{verbatim}
+> xxd b.txt 
+00000000: 4e6f 626f 6479 2067 6f6e 6e61 2074 616b  Nobody gonna tak
+00000010: 6520 6d79 2063 6172 2c20 4927 6d20 676f  e my car, I'm go
+00000020: 6e6e 6120 7261 6365 2069 7420 746f 2074  nna race it to t
+00000030: 6865 2067 726f 756e 640a 416e 6420 6e6f  he ground.And no
+00000040: 626f 6479 2067 6f6e 6e61 2062 6561 7420  body gonna beat 
+00000050: 6d79 2063 6172 2c20 6974 2773 2067 6f6e  my car, it's gon
+00000060: 6e61 2062 7265 616b 2074 6865 2073 7065  na break the spe
+00000070: 6564 206f 6620 736f 756e 640a 4f6f 682c  ed of sound.Ooh,
+00000080: 2069 7427 7320 6120 6b69 6c6c 696e 6720   it's a killing 
+00000090: 6d61 6368 696e 650a 4974 2773 2067 6f74  machine.It's got
+000000a0: 2065 7665 7279 7468 696e 670a 4c69 6b65   everything.Like
+000000b0: 2061 2064 7269 7669 6e67 2070 6f77 6572   a driving power
+000000c0: 2c20 6269 6720 6661 7420 7469 7265 7320  , big fat tires 
+000000d0: 616e 6420 6576 6572 7974 6869 6e67 0a    and everything.
+\end{verbatim}
+
+Peso:
+\begin{verbatim}
+> tat -f%z b.txt 
+223
+\end{verbatim}
+
+¿Cuál es la diferencia respecto a contenido binario de los dos archivos? \textbf{La diferencia es un total de 41 bits.}
+
+\subsection*{5. Comprime la frase del anterior inciso y otra frase más (puede ser una frase de una de tus peliculas favoritas), usando los algoritmos vistos. Para el primer algoritmo adjunta su representación binaria de inicio y final despúes de utilizarlo.}
+\newpage
+Representacion en binario de la frase anterior:
+\begin{verbatim}[breaklines=true, breakanywhere=true]
+010011100110111101100010011011110110010001111001001000000110011101101111011011100110111001100001001000000111010001100001011010110110010100100000011011010111100100100000011000110110000101110010001011000010000001001001001001110110110100100000011001110110111101101110011011100110000100100000011100100110000101100011011001010010000001101001011101000010000001110100011011110010000001110100011010000110010100100000011001110111001001101111011101010110111001100100001000000100000101101110011001000010000001101110011011110110001001101111011001000111100100100000011001110110111101101110011011100110000100100000011000100110010101100001011101000010000001101101011110010010000001100011011000010111001000101100001000000110100101110100001001110111001100100000011001110110111101101110011011100110000100100000011000100111001001100101011000010110101100100000011101000110100001100101001000000111001101110000011001010110010101100100001000000110111101100110001000000111001101101111011101010110111001100100001000000100111101101111011010000010110000100000011010010111010000100111011100110010000001100001001000000110101101101001011011000110110001101001011011100110011100100000011011010110000101100011011010000110100101101110011001010010000001001001011101000010011101110011001000000110011101101111011101000010000001100101011101100110010101110010011110010111010001101000011010010110111001100111001000000100110001101001011010110110010100100000011000010010000001100100011100100110100101110110011010010110111001100111001000000111000001101111011101110110010101110010001011000010000001100010011010010110011100100000011001100110000101110100001000000111010001101001011100100110010101110011001000000110000101101110011001000010000001100101011101100110010101110010011110010111010001101000011010010110111001100111
+\end{verbatim}
+
+\newpage
+
+Después de la compresión:
+\begin{verbatim}[breaklines=true, breakanywhere=true]
+11111101010101111101010101110111000010010101110111010010010001001011110110100011111011100011000110011111011000000110010111001101111100010010101110111010010011110100111000111010001101000001000101000100001010110100010011110101010110011110101110011001000111010111001110101011111010101011101110000100101011101110100100111110110110011000000111110111000110001100111110110000000110100011001101011000100101011101110100100111110111101101100101111000100001010110100010111011000110111011011100101010110100001011101010110011110101110011111101110100101011000000011010001100110101100100100011110011010110111011011011011100100000111111001110001010100110111011010011001011000110011010110001001010100000110111111111101111100111010000101001101110010000110010010110011110110100100100101111111001101111111011011100100001011000101011111100110111110110000001111100110010000101101010011000001000011011110110101011001001111010111001101111111111011111001110100001010011011100100
+\end{verbatim}
+
+El ahorro fue de: \textbf{725 bits}
+
+Nueva frase:
+\begin{verbatim}
+Pues bien, yo necesito decirte que te adoro, decirte que te quiero con todo el corazón
+\end{verbatim}
+
+\newpage
+
+Texto original a binario:
+\begin{verbatim}[breaklines=true, breakanywhere=true]
+01010000 01110101 01100101 01110011 00100000 01100010 01101001 01100101 01101110 00101100 00100000 01111001 01101111 00100000 01101110 01100101 01100011 01100101 01110011 01101001 01110100 01101111 00100000 01100100 01100101 01100011 01101001 01110010 01110100 01100101 00100000 01110001 01110101 01100101 00100000 01110100 01100101 00100000 01100001 01100100 01101111 01110010 01101111 00101100 00100000 01100100 01100101 01100011 01101001 01110010 01110100 01100101 00100000 01110001 01110101 01100101 00100000 01110100 01100101 00100000 01110001 01110101 01101001 01100101 01110010 01101111 00100000 01100011 01101111 01101110 00100000 01110100 01101111 01100100 01101111 00100000 01100101 01101100 00100000 01100011 01101111 01110010 01100001 01111010 11000011 10110011 01101110 00001010
+\end{verbatim}
+
+Después de la compresión:
+\begin{verbatim}[breaklines=true, breakanywhere=true]
+0010000100110101111111001001100011000010010111100111101111100011100101110101111100010100111110000110010110001001101011011110110010011011110101101111011100000011100101100101111000011001011000100110101101111011001001101111010110111101100100100011010010111110101011000111110100110000011111110001110111010101110011011100011000011010001
+\end{verbatim}
+
+El ahorro fue de: \textbf{323 bits}
+\newpage
+
+\subsection*{6. Dada la palabra ”Azarath Metrion Zinthos” diseña dos árboles de Huffman diferentes y calcula el tamaño promedio del código para cada árbol.}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Símbolo} & \textbf{Frecuencia} \\
+\hline
+A & 1 \\
+M & 1 \\
+Z & 1 \\
+e & 1 \\
+s & 1 \\
+z & 1 \\
+(espacio) & 2 \\
+a & 2 \\
+h & 2 \\
+i & 2 \\
+n & 2 \\
+o & 2 \\
+r & 2 \\
+t & 3 \\
+\hline
+\end{tabular}
+\caption{Tabla de frecuencias}
+\end{table}
+
+Frecuencias en forma de lista:
+\begin{verbatim}
+[('A',1),('M',1),('Z',1),('e',1),('s',1),('z',1),(' ',2),('a',2),('h',2),('i',2),('n',2),('o',2),('r',2),('t',3)]
+\end{verbatim}
+
+Contruccion del arbol:
+Lo habia hecho en markdown pero en latex es otra historia xD.
+
+Por cada caracter le corresponde un codigo de huffman con el arbol de arriba:
+\begin{verbatim}
+[('i',"100"),('n',"101"),('a',"0110"),('h',"0111"),('t',"111"),('o',"1100"),('r',"1101"),('A',"0000"),('M',"0010"),(' ',"0101"),('s',"01001"),('z',"0001"),('Z',"0011"),('e',"01000")]
+\end{verbatim}
+
+
+\subsection*{7. ¿Cómo se garantiza que este algoritmo no genere un árbol desbalanceado?}
+
+En general los arboles de huffman no son balanceados
+
+\subsection*{8. ¿Puede cambiar la altura de un árbol de acuerdo a su codificación?}
+Si y esto depende de la frecuencia de los caracteres o elementos, algunos puede quedar muy lejos aunque tengan poca frecuencia, por ejemplo en mi arbol de arriba la letra tquedo muy lejos por la manera en que lo construí, bien podría tener un solo bit para representarlo.
+
+\subsection*{9. ¿Por qué es necesario tener un respectivo árbol de Huffman para decodificar una cadena de texto? ¿Qué pasa si no lo tengo?}
+Te pones llorar porque perdiste tu información XD. Como el árbol es la llave para poder construir el mensaje original si pierdes el árbol no hay manera en que puedas recuperarlo.
 
 \chapter*{Conclusiones}
 Si bien no tengo mucha experiencia en haskell, la mayoria de las funciones eran bastante intuitivas usando recursio, pero hubo algunas que se me complicaron un poco, como el caso de construir el arbol de huffman recursivamente con mi funcion, al final hice uso de Maybe.
