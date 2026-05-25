@@ -17,7 +17,8 @@ upsertDicc key mp = insertWith (+) key 1 mp
 
 -- Build the dicc with the key value of each character
 createDicc :: [Char] -> FreqMap
-createDicc xs = foldr (\c -> upsertDicc c) empty xs
+createDicc []     = empty
+createDicc (x:xs) = upsertDicc x (createDicc xs)
 
 -- Convert from Map (FreqMap) to List
 freqList :: FreqMap -> [(Char, Int)]
